@@ -1,14 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-
-function guessNameColumn(columns) {
-  const arabicHit = columns.find((c) => c.includes("اسم"));
-  if (arabicHit) return arabicHit;
-  const englishHit = columns.find((c) => c.toLowerCase().includes("name"));
-  if (englishHit) return englishHit;
-  return columns[0];
-}
+import MemberCard from "@/components/MemberCard";
+import CardSkeletonGrid from "@/components/CardSkeletonGrid";
+import { guessNameColumn } from "@/lib/personCard";
 
 export default function SectionExplorer({ rows, columns, loading, error, searchLabel }) {
   const [query, setQuery] = useState("");
@@ -54,7 +49,7 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
 
   return (
     <div>
-      <div className="bg-white border border-line rounded-xl p-5 md:p-6 shadow-sm">
+      <div className="bg-surface border border-line rounded-xl p-5 md:p-6 shadow-sm">
         <label className="block text-sm text-ink/70 mb-2">{searchLabel || "ابحث في هذا القسم"}</label>
         <input
           type="text"
@@ -73,7 +68,7 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
                   setFilterColumn(e.target.value);
                   setFilterValue("");
                 }}
-                className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-white"
+                className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-surface"
               >
                 <option value="">فلترة حسب...</option>
                 {filterableColumns.map((c) => (
@@ -86,7 +81,7 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
                 <select
                   value={filterValue}
                   onChange={(e) => setFilterValue(e.target.value)}
-                  className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-white"
+                  className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-surface"
                 >
                   <option value="">الكل</option>
                   {filterValues.map((v) => (
@@ -101,7 +96,7 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
 
           <button
             onClick={() => setSortAsc((s) => !s)}
-            className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-white hover:bg-teal-light transition-colors"
+            className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-surface hover:bg-primary-light transition-colors"
           >
             ترتيب أبجدي {sortAsc ? "(أ-ي)" : "(ي-أ)"}
           </button>
@@ -109,37 +104,31 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
       </div>
 
       <div className="mt-6">
-        {loading && <p className="text-ink/60">جارِ تحميل البيانات...</p>}
+        {loading && <CardSkeletonGrid />}
         {error && (
-          <p className="text-red-700 bg-red-50 border border-red-200 rounded-lg p-4 whitespace-pre-line">
+          <p className="text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-4 whitespace-pre-line">
             {error}
           </p>
         )}
 
         {!loading && !error && (
           <>
-            <p className="text-sm text-ink/60 mb-4">
+            <p className="text-sm text-ink-muted mb-4">
               {filtered.length} نتيجة من أصل {rows.length}
             </p>
             <div className="grid sm:grid-cols-2 gap-4">
               {filtered.map((r) => (
-                <div key={r._row} className="bg-white border border-line rounded-xl p-4">
-                  <h3 className="font-medium text-lg">{r[nameColumn] || "—"}</h3>
-                  <dl className="mt-2 grid grid-cols-1 gap-1">
-                    {columns
-                      .filter((c) => c !== nameColumn && r[c])
-                      .map((c) => (
-                        <div key={c} className="flex gap-2 text-sm">
-                          <dt className="text-ink/50 shrink-0">{c}:</dt>
-                          <dd className="text-ink/80">{r[c]}</dd>
-                        </div>
-                      ))}
-                  </dl>
-                </div>
+                <MemberCard
+                  key={r._row}
+                  row={r}
+                  columns={columns}
+                  nameColumn={nameColumn}
+                  rows={rows}
+                />
               ))}
             </div>
             {filtered.length === 0 && (
-              <p className="text-ink/60 mt-8 text-center">لا توجد نتائج مطابقة للبحث.</p>
+              <p className="text-ink-muted mt-8 text-center">لا توجد نتائج مطابقة للبحث.</p>
             )}
           </>
         )}

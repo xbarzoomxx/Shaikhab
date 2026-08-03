@@ -90,14 +90,14 @@ export default function AdminPage() {
                 href={sheetUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="focus-ring rounded-lg bg-teal text-sand px-4 py-2 text-sm hover:bg-teal-dark transition-colors"
+                className="focus-ring rounded-lg bg-primary text-primary-foreground px-4 py-2 text-sm hover:bg-primary-hover transition-colors"
               >
                 فتح ملف Google Sheet للتعديل
               </a>
             )}
             <button
               onClick={handleLogout}
-              className="focus-ring rounded-lg border border-line px-4 py-2 text-sm hover:bg-red-50 transition-colors"
+              className="focus-ring rounded-lg border border-line px-4 py-2 text-sm hover:bg-red-50 dark:hover:bg-red-950/40 transition-colors"
             >
               خروج
             </button>
@@ -109,7 +109,7 @@ export default function AdminPage() {
           تعديل بياناته، افتح الملف من الزر أعلاه وعدّل الصف في التبويب المناسب مباشرة.
         </div>
 
-        <div className="bg-white border border-line rounded-xl p-5 mb-6">
+        <div className="bg-surface border border-line rounded-xl p-5 mb-6">
           <h3 className="font-medium mb-3">تجهيز كشف جديد للصق في الملف</h3>
           <p className="text-sm text-ink/60 mb-3">
             اختر ملف Excel أو CSV يحتوي على بيانات جديدة (لأي قسم من الأقسام الثلاثة)، وسيتم
@@ -130,7 +130,7 @@ export default function AdminPage() {
                 </p>
                 <button
                   onClick={handleCopy}
-                  className="focus-ring rounded-lg bg-gold text-white px-3 py-1.5 text-sm hover:opacity-90 transition-opacity"
+                  className="focus-ring rounded-lg bg-accent text-accent-foreground px-3 py-1.5 text-sm hover:bg-accent-hover transition-colors"
                 >
                   {copied ? "تم النسخ ✓" : "نسخ الكل"}
                 </button>
@@ -175,18 +175,18 @@ export default function AdminPage() {
             placeholder="بحث سريع ضمن كل الأعمدة..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="focus-ring flex-1 min-w-[240px] rounded-lg border border-line px-4 py-3 outline-none bg-white"
+            className="focus-ring flex-1 min-w-[240px] rounded-lg border border-line px-4 py-3 outline-none bg-surface"
           />
           <button
             onClick={handleExport}
-            className="focus-ring rounded-lg border border-line px-4 py-3 text-sm hover:bg-teal-light transition-colors bg-white"
+            className="focus-ring rounded-lg border border-line px-4 py-3 text-sm hover:bg-teal-light transition-colors bg-surface"
           >
             تصدير Excel لهذا القسم
           </button>
         </div>
 
         {error && (
-          <p className="text-red-700 bg-red-50 border border-red-200 rounded-lg p-4 mb-4 whitespace-pre-line">
+          <p className="text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-950/40 border border-red-200 dark:border-red-900 rounded-lg p-4 mb-4 whitespace-pre-line">
             {error}
           </p>
         )}
@@ -194,7 +194,7 @@ export default function AdminPage() {
         {loading ? (
           <p className="text-ink/60">جارِ التحميل...</p>
         ) : (
-          <div className="overflow-x-auto bg-white border border-line rounded-xl">
+          <div className="overflow-x-auto bg-surface border border-line rounded-xl">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-line text-right text-ink/60">

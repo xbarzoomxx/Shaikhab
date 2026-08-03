@@ -52,7 +52,7 @@ export default function TakafulStats({ rows, columns }) {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
       {cards.map((c) => (
-        <div key={c.label} className="bg-white border border-line rounded-xl p-4 text-center">
+        <div key={c.label} className="bg-surface border border-line rounded-xl p-4 text-center">
           <p className="text-2xl font-medium text-teal">{c.value}</p>
           <p className="text-xs text-ink/60 mt-1">{c.label}</p>
         </div>

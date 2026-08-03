@@ -1,6 +1,6 @@
 export function Section({ title, children }) {
   return (
-    <div className="bg-white border border-line rounded-xl p-5 md:p-6 mb-5">
+    <div className="bg-surface border border-line rounded-xl p-5 md:p-6 mb-5">
       <h2 className="text-lg font-medium text-teal mb-3">{title}</h2>
       <div className="text-ink/85 leading-relaxed space-y-2">{children}</div>
     </div>

@@ -36,7 +36,7 @@ export default function AdminLoginPage() {
       <Navbar />
       <section className="max-w-sm mx-auto px-6 py-16">
         <h2 className="text-xl font-medium mb-6 text-center">دخول المسؤول</h2>
-        <form onSubmit={handleSubmit} className="bg-white border border-line rounded-xl p-6">
+        <form onSubmit={handleSubmit} className="bg-surface border border-line rounded-xl p-6">
           <label htmlFor="password" className="block text-sm text-ink/70 mb-2">
             كلمة المرور
           </label>
@@ -48,11 +48,11 @@ export default function AdminLoginPage() {
             className="focus-ring w-full rounded-lg border border-line px-4 py-3 mb-4 outline-none"
             required
           />
-          {error && <p className="text-red-700 text-sm mb-4">{error}</p>}
+          {error && <p className="text-red-700 dark:text-red-300 text-sm mb-4">{error}</p>}
           <button
             type="submit"
             disabled={loading}
-            className="focus-ring w-full rounded-lg bg-teal text-sand py-3 font-medium hover:bg-teal-dark transition-colors disabled:opacity-60"
+            className="focus-ring w-full rounded-lg bg-primary text-primary-foreground py-3 font-medium hover:bg-primary-hover transition-colors disabled:opacity-60"
           >
             {loading ? "جارِ الدخول..." : "دخول"}
           </button>

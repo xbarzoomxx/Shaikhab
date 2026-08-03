@@ -9,8 +9,8 @@ export default function SectionTabs({ sections, active, onChange }) {
           onClick={() => onChange(s.key)}
           className={`focus-ring rounded-lg px-4 py-2 text-sm border transition-colors ${
             active === s.key
-              ? "bg-teal text-sand border-teal"
-              : "bg-white border-line hover:bg-teal-light"
+              ? "bg-primary text-primary-foreground border-primary"
+              : "bg-surface border-line hover:bg-primary-light"
           }`}
         >
           {s.label}
