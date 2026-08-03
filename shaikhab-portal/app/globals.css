@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Aref Ruqaa", "Amiri", serif;
+  --font-body: "Tajawal", "Segoe UI", sans-serif;
+}
+
+html,
+body {
+  background-color: #faf6ef;
+  color: #2b2620;
+  font-family: var(--font-body);
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+/* Subtle repeating rosette motif used as a divider strip beneath the header */
+.rosette-divider {
+  height: 10px;
+  background-image: repeating-linear-gradient(
+    135deg,
+    #c08829 0px,
+    #c08829 2px,
+    transparent 2px,
+    transparent 10px
+  );
+  opacity: 0.55;
+}
+
+.focus-ring:focus-visible {
+  outline: 2px solid #1f5c52;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    scroll-behavior: auto;
+    animation: none !important;
+    transition: none !important;
+  }
+}
