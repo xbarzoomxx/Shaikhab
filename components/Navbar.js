@@ -20,7 +20,7 @@ export default function Navbar({ active }) {
             style={{ fontFamily: "var(--font-display)" }}
             className="text-3xl md:text-4xl leading-tight"
           >
-            أسرة الشيخاب
+            الشيخاب
           </h1>
         </Link>
 
