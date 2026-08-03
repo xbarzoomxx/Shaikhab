@@ -3,10 +3,10 @@
 import Navbar from "@/components/Navbar";
 import PublicDataView from "@/components/PublicDataView";
 
-export default function HomePage() {
+export default function SocietyPage() {
   return (
     <main className="min-h-screen">
-      <Navbar active="/" />
+      <Navbar active="/society" />
 
       <section className="max-w-5xl mx-auto px-6 py-8">
         <div className="mb-6">
@@ -14,12 +14,12 @@ export default function HomePage() {
             style={{ fontFamily: "var(--font-display)" }}
             className="text-3xl md:text-4xl text-teal-dark"
           >
-            الدليل العائلي
+            أعضاء الجمعية
           </h1>
-          <p className="text-ink/60 mt-1">دليل أفراد أسرة الشيخاب — كباراً وصغاراً</p>
+          <p className="text-ink/60 mt-1">الأعضاء الرسميون في جمعية الشيخاب الخيرية</p>
         </div>
 
-        <PublicDataView section="members" searchLabel="ابحث باسمك أو اسم أي فرد من العائلة" />
+        <PublicDataView section="officials" searchLabel="ابحث عن أحد أعضاء الجمعية" />
       </section>
 
       <footer className="text-center text-xs text-ink/40 py-8">

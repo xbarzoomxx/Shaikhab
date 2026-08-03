@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 
 export default function AdminLoginPage() {
   const [password, setPassword] = useState("");
@@ -33,7 +33,7 @@ export default function AdminLoginPage() {
 
   return (
     <main className="min-h-screen">
-      <Header showAdminLink={false} />
+      <Navbar />
       <section className="max-w-sm mx-auto px-6 py-16">
         <h2 className="text-xl font-medium mb-6 text-center">دخول المسؤول</h2>
         <form onSubmit={handleSubmit} className="bg-white border border-line rounded-xl p-6">

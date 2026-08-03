@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/components/Header";
+import Navbar from "@/components/Navbar";
 import SectionTabs from "@/components/SectionTabs";
 import { useSectionData } from "@/lib/useSectionData";
 import { SECTIONS } from "@/lib/sections";
@@ -79,7 +79,7 @@ export default function AdminPage() {
 
   return (
     <main className="min-h-screen">
-      <Header showAdminLink={false} />
+      <Navbar />
 
       <section className="max-w-6xl mx-auto px-6 py-8">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
