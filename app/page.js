@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import Header from "@/components/Header";
 import SectionTabs from "@/components/SectionTabs";
 import PublicDataView from "@/components/PublicDataView";
@@ -16,7 +17,15 @@ export default function HomePage() {
       <Header />
 
       <section className="max-w-5xl mx-auto px-6 py-8">
-        <SectionTabs sections={SECTION_LIST} active={active} onChange={setActive} />
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
+          <SectionTabs sections={SECTION_LIST} active={active} onChange={setActive} />
+          <Link
+            href="/bylaws"
+            className="focus-ring text-sm text-teal underline underline-offset-4 hover:text-teal-dark mb-6"
+          >
+            لائحة الصندوق العلاجي
+          </Link>
+        </div>
         <PublicDataView section={active} />
       </section>
 
