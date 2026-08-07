@@ -43,9 +43,7 @@ export default function TakafulPage() {
           <p className="text-ink/60 mt-1">اللائحة، الاشتراكات، والقائمون على الصندوق</p>
         </div>
 
-        {!subs.loading && !subs.error && (
-          <TakafulStats rows={subs.rows} columns={subs.columns} />
-        )}
+        <TakafulStats rows={subs.rows} columns={subs.columns} loading={subs.loading} />
 
         <SectionTabs sections={SUB_SECTIONS} active={active} onChange={setActive} />
 

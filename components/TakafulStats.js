@@ -11,50 +11,74 @@ function parseAmount(val) {
 }
 
 function formatNumber(n) {
-  return n.toLocaleString("ar-EG");
+  // Force Western (English) digits regardless of server/browser locale.
+  return n.toLocaleString("en-US");
 }
 
-export default function TakafulStats({ rows, columns }) {
-  if (rows.length === 0) return null;
+const CARD_SLOTS = [
+  "عدد المشتركين",
+  "إجمالي المطلوب",
+  "إجمالي المحصّل",
+  "اشتراكات مدفوعة",
+  "اشتراكات متأخرة",
+];
 
-  const nameCol = findColumn(columns, ["اسم"]);
-  const dueCol = findColumn(columns, ["مطلوب"]);
-  const paidCol = findColumn(columns, ["مدفوع"]);
-  const statusCol = findColumn(columns, ["حالة"]);
+function Spinner() {
+  return (
+    <span
+      className="inline-block w-5 h-5 rounded-full border-2 border-primary/25 border-t-primary animate-spin"
+      role="status"
+      aria-label="جارِ التحميل"
+    />
+  );
+}
 
-  const distinctMembers = nameCol
-    ? new Set(rows.map((r) => (r[nameCol] || "").trim()).filter(Boolean)).size
-    : rows.length;
+export default function TakafulStats({ rows, columns, loading }) {
+  let values = {};
 
-  const totalDue = dueCol ? rows.reduce((sum, r) => sum + parseAmount(r[dueCol]), 0) : null;
-  const totalPaid = paidCol ? rows.reduce((sum, r) => sum + parseAmount(r[paidCol]), 0) : null;
+  if (!loading && rows.length > 0) {
+    const nameCol = findColumn(columns, ["اسم"]);
+    const dueCol = findColumn(columns, ["مطلوب"]);
+    const paidCol = findColumn(columns, ["مدفوع"]);
+    const statusCol = findColumn(columns, ["حالة"]);
 
-  let paidCount = 0;
-  let lateCount = 0;
-  if (statusCol) {
-    rows.forEach((r) => {
-      const v = (r[statusCol] || "").trim();
-      if (v.includes("مدفوع") && !v.includes("غير")) paidCount++;
-      else if (v.includes("متأخر")) lateCount++;
-    });
-  }
+    const distinctMembers = nameCol
+      ? new Set(rows.map((r) => (r[nameCol] || "").trim()).filter(Boolean)).size
+      : rows.length;
 
-  const cards = [
-    { label: "عدد المشتركين", value: formatNumber(distinctMembers) },
-  ];
-  if (totalDue !== null) cards.push({ label: "إجمالي المطلوب", value: `${formatNumber(totalDue)} جنيه` });
-  if (totalPaid !== null) cards.push({ label: "إجمالي المحصّل", value: `${formatNumber(totalPaid)} جنيه` });
-  if (statusCol) {
-    cards.push({ label: "اشتراكات مدفوعة", value: formatNumber(paidCount) });
-    cards.push({ label: "اشتراكات متأخرة", value: formatNumber(lateCount) });
+    const totalDue = dueCol ? rows.reduce((sum, r) => sum + parseAmount(r[dueCol]), 0) : null;
+    const totalPaid = paidCol ? rows.reduce((sum, r) => sum + parseAmount(r[paidCol]), 0) : null;
+
+    let paidCount = 0;
+    let lateCount = 0;
+    if (statusCol) {
+      rows.forEach((r) => {
+        const v = (r[statusCol] || "").trim();
+        if (v.includes("مدفوع") && !v.includes("غير")) paidCount++;
+        else if (v.includes("متأخر")) lateCount++;
+      });
+    }
+
+    values = {
+      "عدد المشتركين": formatNumber(distinctMembers),
+      "إجمالي المطلوب": totalDue !== null ? `${formatNumber(totalDue)} جنيه` : "—",
+      "إجمالي المحصّل": totalPaid !== null ? `${formatNumber(totalPaid)} جنيه` : "—",
+      "اشتراكات مدفوعة": statusCol ? formatNumber(paidCount) : "—",
+      "اشتراكات متأخرة": statusCol ? formatNumber(lateCount) : "—",
+    };
   }
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
-      {cards.map((c) => (
-        <div key={c.label} className="bg-surface border border-line rounded-xl p-4 text-center">
-          <p className="text-2xl font-medium text-teal">{c.value}</p>
-          <p className="text-xs text-ink/60 mt-1">{c.label}</p>
+      {CARD_SLOTS.map((label) => (
+        <div
+          key={label}
+          className="bg-surface border border-line rounded-xl p-4 text-center flex flex-col items-center justify-center min-h-[86px]"
+        >
+          <div className="text-2xl font-medium text-teal flex items-center justify-center h-8">
+            {loading ? <Spinner /> : values[label] ?? "—"}
+          </div>
+          <p className="text-xs text-ink-muted mt-1">{label}</p>
         </div>
       ))}
     </div>
