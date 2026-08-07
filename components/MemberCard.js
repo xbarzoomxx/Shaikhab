@@ -2,6 +2,7 @@
 
 import {
   guessPhoneColumn,
+  guessNumberColumn,
   guessSecondaryColumn,
   guessBadgeColumns,
   initialOf,
@@ -22,10 +23,21 @@ export default function MemberCard({ row, columns, nameColumn, rows }) {
   const name = row[nameColumn] || "—";
   const phoneCol = guessPhoneColumn(columns);
   const phone = phoneCol ? row[phoneCol] : null;
+  const numberCol = guessNumberColumn(columns);
+  const number = numberCol ? row[numberCol] : null;
   const badgeCols = guessBadgeColumns(columns, rows, [nameColumn, phoneCol].filter(Boolean));
-  const secondaryCol = guessSecondaryColumn(columns, [nameColumn, phoneCol, ...badgeCols].filter(Boolean));
+  const secondaryCol = guessSecondaryColumn(
+    columns,
+    [nameColumn, phoneCol, numberCol, ...badgeCols].filter(Boolean)
+  );
   const restCols = columns.filter(
-    (c) => c !== nameColumn && c !== phoneCol && c !== secondaryCol && !badgeCols.includes(c) && row[c]
+    (c) =>
+      c !== nameColumn &&
+      c !== phoneCol &&
+      c !== numberCol &&
+      c !== secondaryCol &&
+      !badgeCols.includes(c) &&
+      row[c]
   );
 
   const hue = avatarHue(name);
@@ -33,7 +45,15 @@ export default function MemberCard({ row, columns, nameColumn, rows }) {
   const wa = whatsappLink(phone);
 
   return (
-    <div className="bg-surface border border-line rounded-xl p-4 transition-transform hover:-translate-y-0.5 hover:shadow-md">
+    <div className="relative bg-surface border border-line rounded-xl p-4 transition-transform hover:-translate-y-0.5 hover:shadow-md">
+      {number && (
+        <span
+          className="absolute top-3 left-3 text-xs font-medium text-ink-muted bg-primary-light text-primary rounded-full w-6 h-6 flex items-center justify-center"
+          title="رقم العضوية"
+        >
+          {number}
+        </span>
+      )}
       <div className="flex items-start gap-3">
         <div
           className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 font-medium text-white"

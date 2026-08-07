@@ -1,9 +1,10 @@
 "use client";
 
-import { initialOf, avatarHue, guessPhoneColumn, telLink, whatsappLink } from "@/lib/personCard";
+import { initialOf, avatarHue, guessPhoneColumn, guessNumberColumn, telLink, whatsappLink } from "@/lib/personCard";
 
-function TreeNode({ node, nameColumn, phoneCol, depth }) {
+function TreeNode({ node, nameColumn, phoneCol, numberCol, depth }) {
   const name = node.row[nameColumn] || "—";
+  const number = numberCol ? node.row[numberCol] : null;
   const hue = avatarHue(name);
   const hasChildren = node.children.length > 0;
   const phone = phoneCol ? node.row[phoneCol] : null;
@@ -18,6 +19,11 @@ function TreeNode({ node, nameColumn, phoneCol, depth }) {
       >
         {initialOf(name)}
       </span>
+      {number && (
+        <span className="text-xs text-primary bg-primary-light rounded-full w-5 h-5 flex items-center justify-center shrink-0">
+          {number}
+        </span>
+      )}
       <span className="text-sm md:text-base">{name}</span>
       {hasChildren && (
         <span className="text-xs text-ink-muted">({node.children.length})</span>
@@ -78,6 +84,7 @@ function TreeNode({ node, nameColumn, phoneCol, depth }) {
             node={child}
             nameColumn={nameColumn}
             phoneCol={phoneCol}
+            numberCol={numberCol}
             depth={depth + 1}
           />
         ))}
@@ -88,6 +95,7 @@ function TreeNode({ node, nameColumn, phoneCol, depth }) {
 
 export default function FamilyTree({ groups, nameColumn, columns }) {
   const phoneCol = guessPhoneColumn(columns);
+  const numberCol = guessNumberColumn(columns);
 
   if (groups.length === 0) {
     return <p className="text-ink-muted text-center py-8">لا توجد بيانات لعرضها كشجرة عائلية بعد.</p>;
@@ -102,7 +110,14 @@ export default function FamilyTree({ groups, nameColumn, columns }) {
           )}
           <div className="space-y-1">
             {group.roots.map((node, i) => (
-              <TreeNode key={i} node={node} nameColumn={nameColumn} phoneCol={phoneCol} depth={0} />
+              <TreeNode
+                key={i}
+                node={node}
+                nameColumn={nameColumn}
+                phoneCol={phoneCol}
+                numberCol={numberCol}
+                depth={0}
+              />
             ))}
           </div>
         </div>

@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import MemberCard from "@/components/MemberCard";
 import CardSkeletonGrid from "@/components/CardSkeletonGrid";
-import { guessNameColumn } from "@/lib/personCard";
+import { guessNameColumn, guessNumberColumn } from "@/lib/personCard";
 
 export default function SectionExplorer({ rows, columns, loading, error, searchLabel }) {
   const [query, setQuery] = useState("");
@@ -12,6 +12,10 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
   const [sortAsc, setSortAsc] = useState(true);
 
   const nameColumn = useMemo(() => guessNameColumn(columns), [columns]);
+  const numberColumn = useMemo(() => guessNumberColumn(columns), [columns]);
+  const [sortField, setSortField] = useState(null); // resolved below once numberColumn is known
+
+  const activeSortField = sortField || (numberColumn ? "number" : "name");
 
   const filterableColumns = useMemo(() => {
     return columns.filter((col) => {
@@ -38,14 +42,22 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
     if (filterColumn && filterValue) {
       list = list.filter((r) => (r[filterColumn] || "").trim() === filterValue);
     }
-    if (nameColumn) {
+    if (activeSortField === "number" && numberColumn) {
+      list = [...list].sort((a, b) => {
+        const na = parseFloat(a[numberColumn]);
+        const nb = parseFloat(b[numberColumn]);
+        const va = Number.isFinite(na) ? na : Infinity;
+        const vb = Number.isFinite(nb) ? nb : Infinity;
+        return sortAsc ? va - vb : vb - va;
+      });
+    } else if (nameColumn) {
       list = [...list].sort((a, b) => {
         const res = String(a[nameColumn] || "").localeCompare(String(b[nameColumn] || ""), "ar");
         return sortAsc ? res : -res;
       });
     }
     return list;
-  }, [rows, columns, query, filterColumn, filterValue, nameColumn, sortAsc]);
+  }, [rows, columns, query, filterColumn, filterValue, nameColumn, numberColumn, activeSortField, sortAsc]);
 
   return (
     <div>
@@ -94,11 +106,34 @@ export default function SectionExplorer({ rows, columns, loading, error, searchL
             </>
           )}
 
+          {numberColumn && (
+            <div className="flex rounded-lg border border-line overflow-hidden">
+              <button
+                onClick={() => setSortField("number")}
+                className={`px-3 py-2 text-sm transition-colors ${
+                  activeSortField === "number" ? "bg-primary text-primary-foreground" : "bg-surface"
+                }`}
+              >
+                ترتيب حسب الرقم
+              </button>
+              <button
+                onClick={() => setSortField("name")}
+                className={`px-3 py-2 text-sm transition-colors border-r border-line ${
+                  activeSortField === "name" ? "bg-primary text-primary-foreground" : "bg-surface"
+                }`}
+              >
+                ترتيب أبجدي
+              </button>
+            </div>
+          )}
+
           <button
             onClick={() => setSortAsc((s) => !s)}
             className="focus-ring rounded-lg border border-line px-3 py-2 text-sm bg-surface hover:bg-primary-light transition-colors"
           >
-            ترتيب أبجدي {sortAsc ? "(أ-ي)" : "(ي-أ)"}
+            {activeSortField === "number"
+              ? `(${sortAsc ? "تصاعدي" : "تنازلي"})`
+              : `أبجدي ${sortAsc ? "(أ-ي)" : "(ي-أ)"}`}
           </button>
         </div>
       </div>
