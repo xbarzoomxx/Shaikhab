@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import Navbar from "@/components/Navbar";
 import SectionExplorer from "@/components/SectionExplorer";
 import FamilyTree from "@/components/FamilyTree";
+import FamilyTreeGraphic from "@/components/FamilyTreeGraphic";
 import CardSkeletonGrid from "@/components/CardSkeletonGrid";
 import { useSectionData } from "@/lib/useSectionData";
 import { guessNameColumn } from "@/lib/personCard";
@@ -20,11 +21,14 @@ export default function HomePage() {
   );
   const parentColumn = useMemo(() => findParentColumn(columns), [columns]);
 
+  const isGraphic = view === "tree" && tree?.hasParentLinks;
+  const containerWidth = isGraphic ? "max-w-6xl" : "max-w-3xl";
+
   return (
     <main className="min-h-screen">
       <Navbar active="/" />
 
-      <section className="max-w-3xl mx-auto px-6 py-8">
+      <section className={`${containerWidth} mx-auto px-6 py-8 transition-all`}>
         <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1
@@ -72,7 +76,20 @@ export default function HomePage() {
         )}
 
         {!loading && !error && view === "tree" && tree && (
-          <FamilyTree groups={tree.groups} nameColumn={nameColumn} columns={columns} />
+          <>
+            {tree.hasParentLinks ? (
+              <div className="space-y-6">
+                <p className="text-xs text-ink-muted">
+                  حرّك بالسحب، وكبّر/صغّر بعجلة الماوس أو بإصبعين على الجوال (Pinch).
+                </p>
+                {tree.groups.flatMap((g) => g.roots).map((root, i) => (
+                  <FamilyTreeGraphic key={i} root={root} nameColumn={nameColumn} columns={columns} />
+                ))}
+              </div>
+            ) : (
+              <FamilyTree groups={tree.groups} nameColumn={nameColumn} columns={columns} />
+            )}
+          </>
         )}
 
         {!loading && !error && view === "list" && (
