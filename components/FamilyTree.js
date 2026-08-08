@@ -2,34 +2,31 @@
 
 import { initialOf, avatarHue, guessPhoneColumn, guessNumberColumn, telLink, whatsappLink } from "@/lib/personCard";
 
-function TreeNode({ node, nameColumn, phoneCol, numberCol, depth }) {
-  const name = node.row[nameColumn] || "—";
-  const number = numberCol ? node.row[numberCol] : null;
+function PersonChip({ row, nameColumn, numberCol, phoneCol, small }) {
+  const name = row[nameColumn] || "—";
+  const number = numberCol ? row[numberCol] : null;
   const hue = avatarHue(name);
-  const hasChildren = node.children.length > 0;
-  const phone = phoneCol ? node.row[phoneCol] : null;
+  const phone = phoneCol ? row[phoneCol] : null;
   const tel = telLink(phone);
   const wa = whatsappLink(phone);
+  const size = small ? "w-6 h-6 text-[10px]" : "w-7 h-7 text-xs";
 
-  const nodeLabel = (
-    <span className="inline-flex items-center gap-2 py-1.5">
+  return (
+    <span className="inline-flex items-center gap-1.5">
       <span
-        className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 font-medium text-white text-xs"
+        className={`${size} rounded-full flex items-center justify-center shrink-0 font-medium text-white`}
         style={{ backgroundColor: `hsl(${hue} 45% 42%)` }}
       >
         {initialOf(name)}
       </span>
       {number && (
-        <span className="text-xs text-primary bg-primary-light rounded-full w-5 h-5 flex items-center justify-center shrink-0">
+        <span className="text-[10px] text-primary bg-primary-light rounded-full w-4 h-4 flex items-center justify-center shrink-0">
           {number}
         </span>
       )}
-      <span className="text-sm md:text-base">{name}</span>
-      {hasChildren && (
-        <span className="text-xs text-ink-muted">({node.children.length})</span>
-      )}
+      <span className={small ? "text-sm" : "text-sm md:text-base"}>{name}</span>
       {(tel || wa) && (
-        <span className="flex gap-1 mr-1">
+        <span className="flex gap-1">
           {tel && (
             <a
               href={tel}
@@ -54,6 +51,40 @@ function TreeNode({ node, nameColumn, phoneCol, numberCol, depth }) {
       )}
     </span>
   );
+}
+
+function TreeNode({ node, nameColumn, phoneCol, numberCol, depth }) {
+  const hasChildren = node.children.length > 0;
+
+  const nodeLabel = (
+    <div className="py-1">
+      <PersonChip row={node.row} nameColumn={nameColumn} numberCol={numberCol} phoneCol={phoneCol} />
+      {hasChildren && (
+        <span className="text-xs text-ink-muted mr-1">({node.children.length})</span>
+      )}
+      {node.spouses.length > 0 && (
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 mr-1">
+          {node.spouses.map((s, i) => (
+            <span key={i} className="inline-flex items-center gap-1.5 text-ink-muted">
+              <span className="text-xs">⚭</span>
+              <PersonChip
+                row={s.row}
+                nameColumn={nameColumn}
+                numberCol={numberCol}
+                phoneCol={phoneCol}
+                small
+              />
+              {s.status && (
+                <span className="text-[10px] bg-accent-light text-accent-foreground px-1.5 py-0.5 rounded-full">
+                  {s.status}
+                </span>
+              )}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   if (!hasChildren) {
     return <div className="pr-4 border-r-2 border-line">{nodeLabel}</div>;
@@ -62,7 +93,7 @@ function TreeNode({ node, nameColumn, phoneCol, numberCol, depth }) {
   return (
     <details open={depth < 2} className="group">
       <summary className="cursor-pointer list-none marker:content-none focus-ring rounded">
-        <span className="inline-flex items-center gap-1">
+        <span className="inline-flex items-start gap-1">
           <svg
             width="14"
             height="14"
@@ -70,7 +101,7 @@ function TreeNode({ node, nameColumn, phoneCol, numberCol, depth }) {
             fill="none"
             stroke="currentColor"
             strokeWidth="2.5"
-            className="text-ink-muted transition-transform group-open:rotate-90 shrink-0"
+            className="text-ink-muted transition-transform group-open:rotate-90 shrink-0 mt-2.5"
           >
             <path d="M9 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
